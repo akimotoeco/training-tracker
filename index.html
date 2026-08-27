@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#111827" />
+<title>8週間トレーニング記録</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#ffffff; --ink:#111827; --muted:#6b7280; --line:#e5e7eb;
+  --accent:#111827; --ok:#166534; --warn:#b45309; --danger:#b91c1c;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:var(--bg);color:var(--ink)}
+.app{max-width:860px;margin:0 auto;padding:18px 14px 88px}
+h1{font-size:24px;margin:4px 0 8px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;position:sticky;top:0;background:rgba(245,247,251,.94);backdrop-filter:blur(8px);padding:8px 0 12px;z-index:10}
+.tab{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 6px;font-weight:700}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0;box-shadow:0 2px 10px rgba(0,0,0,.03)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
+input,select,button{font:inherit}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:#fff}
+button{cursor:pointer}
+.daygrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.daybtn{padding:14px;border:1px solid var(--line);border-radius:14px;background:#fff;text-align:left}
+.daybtn strong{display:block;font-size:16px;margin-bottom:4px}
+.daybtn.active{outline:2px solid #111827}
+.exercise{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+.exercise:first-child{border-top:0;padding-top:0;margin-top:0}
+.exercise h3{margin:0 0 10px;font-size:17px}
+.meta{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:end}
+.sets{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.setbox small{display:block;color:var(--muted);margin-bottom:4px}
+.primary{width:100%;border:0;background:#111827;color:#fff;border-radius:12px;padding:13px;font-weight:800;margin-top:12px}
+.secondary{width:100%;border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px;font-weight:700;margin-top:8px}.danger-btn{border:1px solid #fecaca;background:#fff;color:var(--danger);border-radius:10px;padding:8px 10px;font-weight:700}.history-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.progress{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin-top:8px}.progress>span{display:block;height:100%;background:#111827}
+.danger{color:var(--danger)}
+.good{color:var(--ok)}
+.note{font-size:13px;color:var(--muted);line-height:1.6}
+.badge{display:inline-block;border-radius:999px;padding:4px 8px;background:#eef2ff;font-size:12px;font-weight:700;margin-left:6px}
+.history-item{border-top:1px solid var(--line);padding:12px 0}
+.history-item:first-child{border-top:0}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.kpi{background:#f9fafb;border-radius:12px;padding:10px}
+.kpi b{display:block;font-size:20px}
+canvas{width:100%;height:220px;border-radius:10px;background:#fff}
+.hidden{display:none!important}
+.footer-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:560px){
+  .row,.meta{grid-template-columns:1fr}
+  .sets{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>トレーニング</h1>
+  <div class="sub">8週間｜週3回を基本、DAY4は任意</div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="workout">記録</button>
+    <button class="tab" data-tab="history">履歴</button>
+    <button class="tab" data-tab="body">体組成</button>
+    <button class="tab" data-tab="data">データ</button>
+  </div>
+
+  <section id="workout">
+    <div class="card"><div class="kpis"><div class="kpi"><span>現在</span><b id="weekDisplay">第1週</b></div><div class="kpi"><span>実施回数</span><b id="sessionDisplay">0 / 24回</b></div></div></div>
+    <div class="card">
+      <div class="row">
+        <div>
+          <label>日付</label>
+          <input id="workoutDate" type="date">
+        </div>
+        <div>
+          <label>トレーニングDAY</label>
+          <select id="daySelect">
+            <option value="1">DAY1｜SQ重</option>
+            <option value="2">DAY2｜BP重</option>
+            <option value="3">DAY3｜SQ量</option>
+            <option value="4">DAY4｜補助</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="exerciseCard" class="card"></div>
+
+    <div class="card">
+      <h3 style="margin-top:0">首・肩・肩甲骨のチェック</h3>
+      <div class="row">
+        <div>
+          <label>違和感・痛み 0〜10</label>
+          <input id="painScore" type="number" min="0" max="10" step="1" value="0">
+        </div>
+        <div>
+          <label>手のしびれ</label>
+          <select id="numbness">
+            <option value="no">なし</option>
+            <option value="yes">あり</option>
+          </select>
+        </div>
+      </div>
+      <p class="note">手のしびれ、筋力低下、症状の持続・悪化がある場合は高重量ベンチを続けず、医療機関での評価を優先してください。</p>
+    </div>
+
+    <div class="card">
+      <label>メモ</label>
+      <input id="workoutNote" placeholder="体調、フォーム、睡眠など">
+      <button class="primary" id="saveWorkout">トレーニングを保存</button>
+      <div id="saveMsg" class="note"></div>
+    </div>
+  </section>
+
+  <section id="history" class="hidden">
+    <div class="card">
+      <h2 style="margin-top:0">トレーニング履歴</h2>
+      <div id="historyList"></div>
+    </div>
+  </section>
+
+  <section id="body" class="hidden">
+    <div class="card"><div class="kpis"><div class="kpi"><span>体重目標</span><b>71.5 kg</b><div class="progress"><span id="weightProgress"></span></div></div><div class="kpi"><span>開始体重</span><b>76.6 kg</b></div><div class="kpi"><span>BP目標</span><b>100 kg</b></div><div class="kpi"><span>SQ目標</span><b>120 kg</b></div></div></div>
+    <div class="card">
+      <div class="row">
+        <div><label>日付</label><input id="bodyDate" type="date"></div>
+        <div><label>体重 kg</label><input id="weight" type="number" step="0.1" placeholder="76.6"></div>
+        <div><label>体脂肪率 %</label><input id="fatPct" type="number" step="0.1" placeholder="20.6"></div>
+        <div><label>骨格筋量 kg</label><input id="skeletalMuscle" type="number" step="0.1" placeholder="30.2"></div>
+        <div><label>四肢除脂肪量 kg</label><input id="limbLean" type="number" step="0.01" placeholder="24.35"></div>
+      </div>
+      <button class="primary" id="saveBody">体組成を保存</button>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">現在値</h2>
+      <div class="kpis" id="bodyKpis"></div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">体重推移</h2>
+      <canvas id="weightChart" width="800" height="300"></canvas>
+    </div>
+  </section>
+
+  <section id="data" class="hidden">
+    <div class="card">
+      <h2 style="margin-top:0">バックアップ</h2>
+      <p class="note">記録はこの端末のブラウザ内に保存されます。機種変更やSafariのデータ消去に備えて、時々バックアップしてください。</p>
+      <div class="footer-actions">
+        <button class="secondary" id="exportBtn">JSONを書き出す</button>
+        <button class="secondary" id="importBtn">JSONを読み込む</button>
+      </div>
+      <input id="importFile" type="file" accept="application/json" class="hidden">
+    </div>
+  </section>
+</div>
+
+<script>
+const plans = {
+  1: [
+    {name:"スクワット", reps:5, sets:4, weight:80, step:2.5, key:"sq"},
+    {name:"ベンチプレス", reps:6, sets:3, weight:55, step:2.5, key:"bp"},
+    {name:"ダンベル・バックランジ", reps:8, sets:3, weight:"", perLeg:true},
+    {name:"ダンベル・フロントランジ", reps:8, sets:3, weight:"", perLeg:true},
+    {name:"レッグカール", reps:"10-12", sets:3, weight:""}
+  ],
+  2: [
+    {name:"ベンチプレス", reps:5, sets:4, weight:60, step:2.5, key:"bp"},
+    {name:"インクラインベンチプレス", reps:8, sets:3, weight:""},
+    {name:"ラットプルダウン", reps:"8-12", sets:3, weight:""},
+    {name:"ロウ系", reps:"8-12", sets:3, weight:""},
+    {name:"三頭筋", reps:"10-12", sets:3, weight:""}
+  ],
+  3: [
+    {name:"スクワット", reps:8, sets:4, weight:70, step:2.5, key:"sq"},
+    {name:"ベンチプレス", reps:8, sets:3, weight:50, step:2.5, key:"bp"},
+    {name:"RDL", reps:8, sets:3, weight:""},
+    {name:"レッグカール", reps:"10-12", sets:3, weight:""},
+    {name:"サイドレイズ", reps:"12-15", sets:3, weight:""}
+  ],
+  4: [
+    {name:"ラットプル or 懸垂", reps:"8-12", sets:3, weight:""},
+    {name:"ロウ系", reps:"10-12", sets:3, weight:""},
+    {name:"サイドレイズ", reps:"12-15", sets:3, weight:""},
+    {name:"三頭筋", reps:"10-12", sets:3, weight:""},
+    {name:"二頭筋", reps:"10-12", sets:3, weight:""}
+  ]
+};
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const today = new Date().toISOString().slice(0,10);
+$("#workoutDate").value = today;
+$("#bodyDate").value = today;
+
+function load(key, fallback=[]){
+  try{return JSON.parse(localStorage.getItem(key)) ?? fallback}catch{return fallback}
+}
+function save(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
+
+function recommendedWeight(ex){
+  if(!ex.key || ex.weight==="") return ex.weight;
+  const hist = load("workouts");
+  const relevant = hist
+    .flatMap(w => w.exercises.map(e => ({...e, date:w.date, pain:w.pain, numbness:w.numbness})))
+    .filter(e => e.key===ex.key && e.name===ex.name)
+    .sort((a,b)=>a.date.localeCompare(b.date));
+  if(!relevant.length) return ex.weight;
+  const last = relevant[relevant.length-1];
+  const target = parseInt(last.targetReps);
+  const allHit = last.actualReps.length===last.sets && last.actualReps.every(r => Number(r) >= target);
+  const symptomsOk = ex.key!=="bp" || (Number(last.pain)<=2 && last.numbness==="no");
+  if(allHit && symptomsOk && Number(last.weight)) return Number(last.weight) + (ex.step||2.5);
+  return Number(last.weight)||ex.weight;
+}
+
+function renderProgress(){
+  const count=load("workouts").length;
+  if($("#sessionDisplay")) $("#sessionDisplay").textContent=`${count} / 24回`;
+  if($("#weekDisplay")) $("#weekDisplay").textContent=`第${Math.min(8,Math.floor(count/3)+1)}週`;
+}
+function attachAutoNext(){
+  const fields=[...document.querySelectorAll(".reps")];
+  fields.forEach((field,idx)=>{field.addEventListener("input",()=>{
+    const v=field.value.trim(); if(!v) return;
+    const ex=field.closest(".exercise"); const i=Number(ex.dataset.i); const base=plans[$("#daySelect").value][i];
+    const target=parseInt(String(base.reps));
+    if(v.length>=2 || Number(v)>=target){
+      const next=fields[idx+1]; setTimeout(()=>{ if(next){next.focus(); next.select();} else {field.blur();}},70);
+    }
+  })});
+}
+function attachTimers(){
+  document.querySelectorAll(".timerBtn").forEach(btn=>{btn.onclick=()=>{
+    const timer=btn.parentElement.querySelector(".timer"); let sec=120; timer.textContent="02:00";
+    if(btn._int) clearInterval(btn._int);
+    btn._int=setInterval(()=>{sec--; timer.textContent=`${String(Math.floor(sec/60)).padStart(2,"0")}:${String(sec%60).padStart(2,"0")}`; if(sec<=0){clearInterval(btn._int);timer.textContent="終了";}},1000);
+  }});
+}
+function renderExercises(){
+  const day = $("#daySelect").value;
+  const list = plans[day];
+  $("#exerciseCard").innerHTML = list.map((ex,i)=>{
+    const w = recommendedWeight(ex);
+    const repLabel = ex.perLeg ? `${ex.reps}回/脚` : `${ex.reps}回`;
+    const hist = load("workouts").flatMap(w => w.exercises.map(e => ({...e,date:w.date,pain:w.pain,numbness:w.numbness}))).filter(e => e.name===ex.name).sort((a,b)=>a.date.localeCompare(b.date));
+    const last = hist.length ? hist[hist.length-1] : null;
+    const prev = last ? `前回：${last.weight||"-"}kg｜${last.actualReps.join("/")}回` : "前回：記録なし";
+    return `
+    <div class="exercise" data-i="${i}">
+      <h3>${ex.name}${ex.key ? `<span class="badge">${ex.key==="sq"?"SQ":"BP"}</span>`:""}${ex.key ? `<span class="badge good">次回目安 ${w}kg</span>`:""}</h3>
+      <div class="note" style="margin-bottom:8px">${prev}</div>
+      <div class="meta">
+        <div>
+          <label>重量 kg</label>
+          <input class="weight" type="number" step="0.5" value="${w ?? ""}">
+        </div>
+        <div class="note">目標：<b>${repLabel} × ${ex.sets}セット</b></div>
+      </div>
+      <div class="sets">
+        ${Array.from({length:ex.sets},(_,s)=>`
+          <div class="setbox">
+            <small>${s+1}セット目</small>
+            <input class="reps" type="number" inputmode="numeric" placeholder="${String(ex.reps).split("-")[0]}">
+          </div>`).join("")}
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:10px"><button class="secondary timerBtn" style="width:auto;margin:0">休憩120秒</button><span class="timer">02:00</span></div>
+    </div>`;
+  }).join("");
+  attachAutoNext(); attachTimers();
+}
+$("#daySelect").addEventListener("change", renderExercises);
+renderExercises(); renderProgress();
+
+$$(".tab").forEach(btn => btn.addEventListener("click", ()=>{
+  $$(".tab").forEach(x=>x.classList.remove("active"));
+  btn.classList.add("active");
+  ["workout","history","body","data"].forEach(id=>$("#"+id).classList.add("hidden"));
+  $("#"+btn.dataset.tab).classList.remove("hidden");
+  if(btn.dataset.tab==="history") renderHistory();
+  if(btn.dataset.tab==="body"){ renderBody(); drawWeightChart(); }
+}));
+
+$("#saveWorkout").addEventListener("click", ()=>{
+  const day = $("#daySelect").value;
+  const exEls = [...$("#exerciseCard").querySelectorAll(".exercise")];
+  const exercises = exEls.map((el,i)=>{
+    const base = plans[day][i];
+    return {
+      name:base.name, key:base.key||null,
+      weight:parseFloat(el.querySelector(".weight").value)||0,
+      targetReps:base.reps, sets:base.sets,
+      actualReps:[...el.querySelectorAll(".reps")].map(x=>Number(x.value)||0)
+    };
+  });
+  const record = {
+    id:Date.now(), date:$("#workoutDate").value, day:Number(day),
+    pain:Number($("#painScore").value)||0, numbness:$("#numbness").value,
+    note:$("#workoutNote").value.trim(), exercises
+  };
+  const hist = load("workouts");
+  hist.push(record); save("workouts",hist);
+  $("#saveMsg").textContent = "保存しました。";
+  setTimeout(()=>$("#saveMsg").textContent="",1800);
+  renderProgress(); renderExercises();
+});
+
+function deleteWorkout(id){
+  if(!confirm("この記録を削除しますか？")) return;
+  save("workouts", load("workouts").filter(x=>x.id!==id));
+  renderHistory(); renderProgress(); renderExercises();
+}
+function renderHistory(){
+  const hist = load("workouts").sort((a,b)=>b.date.localeCompare(a.date));
+  if(!hist.length){$("#historyList").innerHTML='<p class="note">まだ記録がありません。</p>';return}
+  $("#historyList").innerHTML = hist.map(w=>`
+    <div class="history-item">
+      <div class="history-head"><div><b>${w.date}｜DAY${w.day}</b>${w.pain>=3 || w.numbness==="yes" ? '<span class="badge danger">症状あり</span>' : ''}</div><button class="danger-btn" onclick="deleteWorkout(${w.id})">削除</button></div>
+      <div class="note" style="margin-top:6px">
+        ${w.exercises.map(e=>`${e.name} ${e.weight||"-"}kg：${e.actualReps.join("/")}`).join("<br>")}
+        ${w.note ? `<br>メモ：${escapeHtml(w.note)}`:""}
+      </div>
+    </div>`).join("");
+}
+
+$("#saveBody").addEventListener("click", ()=>{
+  const rec = {
+    id:Date.now(), date:$("#bodyDate").value,
+    weight:num("#weight"), fatPct:num("#fatPct"),
+    skeletalMuscle:num("#skeletalMuscle"), limbLean:num("#limbLean")
+  };
+  const arr=load("body"); arr.push(rec); save("body",arr);
+  renderBody(); drawWeightChart();
+});
+function num(s){const v=parseFloat($(s).value);return Number.isFinite(v)?v:null}
+
+function renderBody(){
+  const arr=load("body").sort((a,b)=>a.date.localeCompare(b.date));
+  const last=arr[arr.length-1];
+  let pct=0; if(last && last.weight!=null){ pct=Math.max(0,Math.min(100,((76.6-last.weight)/(76.6-71.5))*100)); }
+  if($("#weightProgress")) $("#weightProgress").style.width=pct+"%";
+  $("#bodyKpis").innerHTML = last ? `
+    <div class="kpi"><span>体重</span><b>${last.weight??"-"} kg</b></div>
+    <div class="kpi"><span>体脂肪率</span><b>${last.fatPct??"-"} %</b></div>
+    <div class="kpi"><span>骨格筋量</span><b>${last.skeletalMuscle??"-"} kg</b></div>
+    <div class="kpi"><span>四肢除脂肪量</span><b>${last.limbLean??"-"} kg</b></div>
+  ` : '<p class="note">まだ体組成データがありません。</p>';
+}
+function drawWeightChart(){
+  const c=$("#weightChart"),ctx=c.getContext("2d");
+  ctx.clearRect(0,0,c.width,c.height);
+  const arr=load("body").filter(x=>x.weight!=null).sort((a,b)=>a.date.localeCompare(b.date));
+  if(arr.length<2){ctx.font="24px sans-serif";ctx.fillText("2件以上でグラフ表示",30,60);return}
+  const pad=50, xs=arr.map((_,i)=>pad+i*(c.width-pad*2)/(arr.length-1));
+  const vals=arr.map(x=>x.weight), min=Math.min(...vals)-1, max=Math.max(...vals)+1;
+  ctx.beginPath();
+  arr.forEach((x,i)=>{
+    const y=c.height-pad-(x.weight-min)/(max-min)*(c.height-pad*2);
+    i?ctx.lineTo(xs[i],y):ctx.moveTo(xs[i],y);
+  });
+  ctx.stroke();
+  arr.forEach((x,i)=>{
+    const y=c.height-pad-(x.weight-min)/(max-min)*(c.height-pad*2);
+    ctx.beginPath();ctx.arc(xs[i],y,4,0,Math.PI*2);ctx.fill();
+  });
+  ctx.font="18px sans-serif";
+  ctx.fillText(`${min.toFixed(1)}kg`,6,c.height-pad+6);
+  ctx.fillText(`${max.toFixed(1)}kg`,6,pad+6);
+}
+
+$("#exportBtn").addEventListener("click", ()=>{
+  const data={workouts:load("workouts"),body:load("body"),exportedAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="training-backup.json";a.click();
+  URL.revokeObjectURL(a.href);
+});
+$("#importBtn").addEventListener("click",()=>$("#importFile").click());
+$("#importFile").addEventListener("change", async e=>{
+  const f=e.target.files[0]; if(!f)return;
+  try{
+    const data=JSON.parse(await f.text());
+    if(data.workouts) save("workouts",data.workouts);
+    if(data.body) save("body",data.body);
+    alert("読み込みました。");
+  }catch{alert("読み込みに失敗しました。")}
+});
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+</script>
+</body>
+</html>
