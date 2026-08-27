@@ -1,0 +1,8 @@
+{
+  "name": "8週間トレーニング記録",
+  "short_name": "Training",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#111827"
+}
