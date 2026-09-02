@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14213D">
+<title>トレーニング</title>
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{
+  --mint:#14213D;--mint-dark:#0B132B;--mint2:#14213D;--mint2-dark:#0F1B35;
+  --ink:#111827;--muted:#6b7280;--bg:#F7F8FA;--card:#fff;--line:#e5e7eb;
+  --danger:#b91c1c;--good:#166534;--soft-mint:#EAF0F8;--soft-mint2:#F3F6FA;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+button,input,select,textarea{font:inherit}
+.field{min-width:0}
+input[type="date"]{display:block;min-width:0;max-width:100%;width:100%;-webkit-appearance:none;appearance:none}
+input[type="date"]::-webkit-date-and-time-value{min-width:0;text-align:center}
+button{cursor:pointer;border:0}
+.app{max-width:820px;margin:auto;padding:12px 12px calc(88px + env(safe-area-inset-bottom))}
+.hero{background:linear-gradient(135deg,var(--mint2),var(--mint2-dark));color:white;border-radius:18px;padding:15px 15px 13px;border-bottom:6px solid var(--mint);box-shadow:0 5px 18px #14213d1a}
+.heroTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.04em;color:#DCE7F5}.hero h1{font-size:27px;margin:3px 0 0}.goalBadge{background:white;color:var(--mint2);font-size:12px;font-weight:900;padding:7px 10px;border-radius:999px;white-space:nowrap}
+.progressRow{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;margin-top:13px}.progressBig{font-size:26px;font-weight:950;line-height:1}.progressSub{font-size:12px;color:#DCE7F5;margin-top:5px}.remaining{font-size:13px;font-weight:800;text-align:right}.bar{height:10px;background:#ffffff45;border-radius:99px;overflow:hidden;margin-top:10px}.bar>span{display:block;height:100%;background:var(--mint);width:0;transition:width .2s ease}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;position:sticky;top:0;z-index:10;background:#F7F8FAee;backdrop-filter:blur(10px);padding:8px 0}.tab{min-height:43px;border-radius:11px;background:#e5e7eb;color:var(--ink);font-weight:850}.tab.active{background:var(--mint2);color:white}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;margin:11px 0;box-shadow:0 2px 10px #1118270a}.cardTitle{font-size:16px;font-weight:900}.note,.small{font-size:12px;color:var(--muted);line-height:1.5}.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin:0 0 5px}
+input,select,textarea{width:100%;border:1px solid #cfd5dc;border-radius:10px;padding:10px 11px;background:#fff;color:var(--ink);font-size:16px;min-height:44px}textarea{min-height:64px;resize:vertical}input:focus,select:focus,textarea:focus{outline:3px solid #3b82f626;border-color:var(--mint2)}
+.daytabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.daybtn{min-height:47px;background:white;border:1px solid var(--line);color:var(--ink);border-radius:11px;font-weight:900;line-height:1.15}.daybtn span{display:block;font-size:10px;color:var(--muted);margin-top:2px}.daybtn.active{background:var(--mint);border-color:var(--mint);color:white}.daybtn.active span{color:white}
+.programHead{border-left:5px solid var(--mint);padding-left:10px}.programTitle{font-size:18px;font-weight:950}.programDesc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
+.exercise{border-top:1px solid var(--line);padding:15px 0}.exercise:first-child{border-top:0;padding-top:1px}.exTop{display:flex;gap:9px;align-items:flex-start}.exNameWrap{flex:1;min-width:0}.exNameLabel{font-size:11px;color:var(--muted);font-weight:800;margin-bottom:4px}.exname{font-size:17px;font-weight:900;border:2px solid #CBD5E1;background:#FFFFFF}.target{font-size:11px;line-height:1.4;font-weight:850;color:var(--mint2);background:var(--soft-mint);padding:7px 8px;border-radius:9px;max-width:42%;text-align:right}.statline{display:flex;flex-wrap:wrap;gap:6px 12px;margin:7px 0 8px}.prev,.pr{font-size:11px}.prev{color:var(--muted)}.pr{color:var(--mint-dark);font-weight:850}
+.labels,.setrow{display:grid;grid-template-columns:38px minmax(0,1fr) minmax(0,1fr);gap:7px;align-items:center}.labels{font-size:11px;color:var(--muted);font-weight:800;margin:8px 0 2px}.setrow{margin:7px 0}.setno{font-size:12px;color:var(--muted);font-weight:850;text-align:center}.setrow input{text-align:center;font-weight:800}.setTools{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.mini{border-radius:9px;padding:8px 10px;font-size:12px;font-weight:850;background:var(--soft-mint);color:var(--mint2)}.mini.orange{background:var(--soft-mint2);color:var(--mint-dark)}.mini.remove{background:#fff1f2;color:var(--danger)}.exerciseMemo{margin-top:7px}.addExercise{width:100%;min-height:46px;border:1px dashed var(--mint);background:var(--soft-mint2);color:var(--mint-dark);border-radius:11px;font-weight:900;margin-top:4px}
+.conditionGrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.primary{width:100%;min-height:51px;border-radius:12px;background:var(--mint);color:white;font-size:17px;font-weight:950;box-shadow:0 3px 0 var(--mint-dark)}.primary:active{transform:translateY(1px);box-shadow:0 2px 0 var(--mint-dark)}.saveMsg{text-align:center;min-height:20px;color:var(--good);font-size:13px;font-weight:850;margin-top:7px}
+.historyItem{padding:12px 0;border-top:1px solid var(--line)}.historyItem:first-child{border-top:0}.historyHead{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.historyDay{font-size:14px;font-weight:900;color:var(--mint2)}.historyDate{font-size:12px;color:var(--muted);margin-top:2px}.historyEx{font-size:12px;line-height:1.55;margin-top:7px}.dangerBtn{padding:7px 9px;border-radius:9px;background:#fee2e2;color:var(--danger);font-size:12px;font-weight:850}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.kpi{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:10px}.kpi span{font-size:11px;color:var(--muted);font-weight:800}.kpi b{display:block;font-size:20px;margin-top:2px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.secondary{min-height:44px;border-radius:10px;background:var(--soft-mint);color:var(--mint2);font-weight:850}.hidden{display:none!important}canvas{width:100%;height:210px}.empty{padding:16px 0;text-align:center;color:var(--muted);font-size:13px}
+@media(max-width:520px){.app{padding-left:10px;padding-right:10px}.hero h1{font-size:24px}.tabs button{font-size:12px;padding:7px 2px}.row2,.conditionGrid{grid-template-columns:1fr}.exTop{display:block}.target{max-width:none;text-align:left;margin-top:6px;display:inline-block}.actions{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <div class="heroTop"><div><div class="eyebrow">8週間トレーニングプログラム</div><h1>TRAINING</h1></div><div class="goalBadge">GOAL 30</div></div>
+    <div class="progressRow"><div><div class="progressBig" id="sessionDisplay">0 / 30回</div><div class="progressSub">トレーニング消化数</div></div><div class="remaining" id="remainingDisplay">あと30回</div></div>
+    <div class="bar"><span id="sessionBar"></span></div>
+  </header>
+
+  <nav class="tabs" aria-label="メインメニュー">
+    <button class="tab active" data-tab="workout" type="button">記録</button>
+    <button class="tab" data-tab="history" type="button">履歴</button>
+    <button class="tab" data-tab="body" type="button">体組成</button>
+    <button class="tab" data-tab="data" type="button">データ</button>
+  </nav>
+
+  <section id="workout">
+    <div class="card">
+      <div class="row2">
+        <div class="field"><label for="workoutDate">日付</label><input id="workoutDate" type="date"></div>
+        <div class="field"><label>今回のDAY</label><div class="daytabs">
+          <button class="daybtn active" data-day="DAY1" type="button">DAY1<span>HEAVY</span></button>
+          <button class="daybtn" data-day="DAY2" type="button">DAY2<span>MIDDLE</span></button>
+          <button class="daybtn" data-day="DAY3" type="button">DAY3<span>VOLUME</span></button>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="card"><div class="programHead"><div class="programTitle" id="dayTitle"></div><div class="programDesc" id="dayDesc"></div></div></div>
+
+    <div class="card">
+      <div id="exerciseList"></div>
+      <datalist id="usedNames"></datalist>
+      <button id="addExercise" class="addExercise" type="button">＋ 種目を追加</button>
+    </div>
+
+    <div class="card">
+      <div class="cardTitle">コンディション</div>
+      <div class="conditionGrid" style="margin-top:10px">
+        <div class="field"><label for="pain">首・肩の痛み 0〜10</label><input id="pain" type="number" min="0" max="10" value="0" inputmode="numeric"></div>
+        <div class="field"><label for="numb">手のしびれ</label><select id="numb"><option value="no">なし</option><option value="yes">あり</option></select></div>
+      </div>
+      <div class="field" style="margin-top:10px"><label for="workoutNote">全体メモ</label><textarea id="workoutNote" placeholder="体調、フォーム、睡眠など"></textarea></div>
+    </div>
+    <button id="saveWorkout" class="primary" type="button">トレーニングを保存</button>
+    <div id="saveMsg" class="saveMsg" aria-live="polite"></div>
+  </section>
+
+  <section id="history" class="hidden"><div class="card"><div class="cardTitle">トレーニング履歴</div><div id="historyList"></div></div></section>
+
+  <section id="body" class="hidden">
+    <div class="card"><div class="kpis">
+      <div class="kpi"><span>体重目標</span><b>71.5 kg</b></div><div class="kpi"><span>開始体重</span><b>76.6 kg</b></div>
+      <div class="kpi"><span>BP目標</span><b>100 kg</b></div><div class="kpi"><span>SQ目標</span><b>120 kg</b></div>
+    </div></div>
+    <div class="card"><div class="row2">
+      <div class="field"><label for="bodyDate">日付</label><input id="bodyDate" type="date"></div>
+      <div class="field"><label for="weight">体重 kg</label><input id="weight" type="number" step="0.1" inputmode="decimal"></div>
+      <div class="field"><label for="fatPct">体脂肪率 %</label><input id="fatPct" type="number" step="0.1" inputmode="decimal"></div>
+      <div class="field"><label for="skeletalMuscle">骨格筋量 kg</label><input id="skeletalMuscle" type="number" step="0.1" inputmode="decimal"></div>
+      <div class="field"><label for="limbLean">四肢除脂肪量 kg</label><input id="limbLean" type="number" step="0.01" inputmode="decimal"></div>
+    </div><button id="saveBody" class="primary" style="margin-top:10px" type="button">体組成を保存</button></div>
+    <div class="card"><div class="cardTitle">現在値</div><div id="bodyKpis" class="kpis" style="margin-top:8px"></div></div>
+    <div class="card"><div class="cardTitle">体重推移</div><canvas id="weightChart" width="800" height="300"></canvas></div>
+  </section>
+
+  <section id="data" class="hidden"><div class="card"><div class="cardTitle">バックアップ</div><p class="note">記録はこの端末のブラウザ内に保存されます。機種変更やブラウザデータ消去に備えて、時々JSONを書き出してください。</p><div class="actions"><button id="exportBtn" class="secondary" type="button">JSONを書き出す</button><button id="importBtn" class="secondary" type="button">JSONを読み込む</button></div><input id="importFile" class="hidden" type="file" accept="application/json"></div></section>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const GOAL = 30;
+  const STORAGE = { workouts: 'workouts', body: 'body' };
+  const programs = {
+    DAY1: { title:'DAY1 — HEAVY', desc:'重さの日｜筋力。主要種目は1〜2回の余力を残す。', exercises:[
+      {name:'スクワット', target:'5回 × 4セット', sets:4, reps:'5'},
+      {name:'ベンチプレス', target:'5回 × 4セット', sets:4, reps:'5'},
+      {name:'ラットプルダウン', target:'6〜8回 × 3セット', sets:3, reps:'6-8'},
+      {name:'ダンベル・バックランジ', target:'8回 × 3セット', sets:3, reps:'8'},
+      {name:'トライセプス', target:'8〜10回 × 2セット', sets:2, reps:'8-10'}
+    ]},
+    DAY2: { title:'DAY2 — MIDDLE', desc:'中間の日｜全身＋ゴルフ用体幹。デッドリフトは軽め高回数。', exercises:[
+      {name:'インクラインベンチ', target:'8〜10回 × 3セット', sets:3, reps:'8-10'},
+      {name:'デッドリフト（軽め）', target:'10〜12回 × 3セット', sets:3, reps:'10-12'},
+      {name:'ローイング', target:'8〜10回 × 3セット', sets:3, reps:'8-10'},
+      {name:'レッグカール', target:'10〜12回 × 3セット', sets:3, reps:'10-12'},
+      {name:'サイドレイズ', target:'12〜15回 × 3セット', sets:3, reps:'12-15'},
+      {name:'ロータリートルソー', target:'左右12〜15回 × 3セット', sets:3, reps:'12-15'},
+      {name:'アームカール', target:'10〜12回 × 2セット', sets:2, reps:'10-12'}
+    ]},
+    DAY3: { title:'DAY3 — VOLUME', desc:'量・刺激の日｜行けた週の追加日。重量を追わず、丁寧に刺激を入れる。', exercises:[
+      {name:'レッグプレス', target:'12〜15回 × 3セット', sets:3, reps:'12-15'},
+      {name:'チェストプレス', target:'10〜12回 × 3セット', sets:3, reps:'10-12'},
+      {name:'ラットプルダウン', target:'10〜12回 × 3セット', sets:3, reps:'10-12'},
+      {name:'フロントランジ', target:'10〜12回 × 3セット', sets:3, reps:'10-12'},
+      {name:'サイドレイズ', target:'15〜20回 × 3セット', sets:3, reps:'15-20'},
+      {name:'トライセプス', target:'12〜15回 × 2セット', sets:2, reps:'12-15'}
+    ]}
+  };
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  const localDate = () => {
+    const d = new Date(); const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  };
+  const load = (key, fallback=[]) => { try { const raw=localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch(e) { return fallback; } };
+  const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+  const uid = () => `${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+
+  function makeExercise(def) {
+    const count = Math.max(1, Number(def.sets) || 3);
+    return { id:uid(), name:def.name || '', target:def.target || '自由設定', reps:def.reps || '', memo:'', values:Array.from({length:count}, () => ({weight:'',reps:''})) };
+  }
+  function freshDay(day) { return programs[day].exercises.map(makeExercise); }
+  const drafts = { DAY1:freshDay('DAY1'), DAY2:freshDay('DAY2'), DAY3:freshDay('DAY3') };
+  let currentDay = 'DAY1';
+
+  function normalizeSets(ex) {
+    if (Array.isArray(ex?.sets)) return ex.sets.map(s => ({weight:s?.weight ?? '', reps:s?.reps ?? ''}));
+    if (Array.isArray(ex?.actualReps)) return ex.actualReps.map(r => ({weight:ex.weight ?? '', reps:r ?? ''}));
+    if (ex && (ex.weight != null || ex.reps != null)) return [{weight:ex.weight ?? '', reps:ex.reps ?? ''}];
+    return [];
+  }
+  function workoutHistory() { const v=load(STORAGE.workouts,[]); return Array.isArray(v) ? v : []; }
+  function allExerciseRecords() {
+    return workoutHistory().flatMap((w, wi) => (Array.isArray(w.exercises) ? w.exercises : []).map((e, ei) => ({
+      name:String(e?.name ?? '').trim(), date:String(w.date ?? ''), id:w.id ?? `${wi}-${ei}`, sets:normalizeSets(e), memo:e?.memo ?? ''
+    }))).filter(e => e.name);
+  }
+  function recordsForName(name) {
+    const n=String(name||'').trim(); if(!n) return [];
+    return allExerciseRecords().filter(e => e.name === n).sort((a,b) => a.date.localeCompare(b.date));
+  }
+  function previousFor(name) { const a=recordsForName(name); return a.length ? a[a.length-1] : null; }
+  function bestFor(name) {
+    let best=null;
+    recordsForName(name).forEach(e => e.sets.forEach(s => {
+      const w=Number(s.weight), r=Number(s.reps); if(!(w>0) || !(r>0)) return;
+      if(!best || w>best.weight || (w===best.weight && r>best.reps)) best={weight:w,reps:r,date:e.date};
+    }));
+    return best;
+  }
+  function rememberedNames() {
+    const names = allExerciseRecords().map(e => e.name);
+    return Array.from(new Set(names)).slice(-80).reverse();
+  }
+  function formatSets(sets) {
+    const used=(sets||[]).filter(s => String(s.weight??'').trim() || String(s.reps??'').trim());
+    return used.length ? used.map(s => `${s.weight || '-'}kg × ${s.reps || '-'}回`).join(' / ') : '記録なし';
+  }
+
+  function renderProgress() {
+    const count = workoutHistory().length;
+    $('#sessionDisplay').textContent = `${count} / ${GOAL}回`;
+    $('#remainingDisplay').textContent = count >= GOAL ? `目標達成 +${count-GOAL}回` : `あと${GOAL-count}回`;
+    $('#sessionBar').style.width = `${Math.min(100, Math.max(0, count/GOAL*100))}%`;
+  }
+
+  function renderDatalist() {
+    $('#usedNames').innerHTML = rememberedNames().map(n => `<option value="${esc(n)}"></option>`).join('');
+  }
+
+  function exerciseHtml(ex, index) {
+    const prev=previousFor(ex.name), best=bestFor(ex.name);
+    return `<div class="exercise" data-index="${index}">
+      <div class="exTop">
+        <div class="exNameWrap"><div class="exNameLabel">種目名（自由に変更できます）</div><input class="exname" list="usedNames" value="${esc(ex.name)}" autocomplete="off" aria-label="種目名"></div>
+        <div class="target">${esc(ex.target || '自由設定')}</div>
+      </div>
+      <div class="statline"><span class="prev">前回：${esc(prev ? formatSets(prev.sets) : '記録なし')}</span>${best ? `<span class="pr">自己ベスト：${esc(best.weight)}kg × ${esc(best.reps)}回</span>` : ''}</div>
+      <div class="labels"><span>SET</span><span>重量 kg</span><span>回数</span></div>
+      ${ex.values.map((v,si) => `<div class="setrow" data-set="${si}"><span class="setno">${si+1}</span><input class="weight" type="number" step="0.5" inputmode="decimal" placeholder="kg" value="${esc(v.weight)}" aria-label="${si+1}セット目の重量"><input class="reps" type="number" step="1" min="0" inputmode="numeric" placeholder="回" value="${esc(v.reps)}" aria-label="${si+1}セット目の回数"></div>`).join('')}
+      <div class="setTools"><button class="mini orange addSet" type="button">＋セット</button><button class="mini removeSet" type="button">−セット</button><button class="mini remove removeExercise" type="button">この種目を削除</button></div>
+      <textarea class="exerciseMemo" placeholder="メモ：マシン機種、シート位置、グリップ、フォームなど">${esc(ex.memo)}</textarea>
+    </div>`;
+  }
+
+  function renderExercises() {
+    const p=programs[currentDay];
+    $('#dayTitle').textContent=p.title; $('#dayDesc').textContent=p.desc;
+    renderDatalist();
+    $('#exerciseList').innerHTML=drafts[currentDay].map(exerciseHtml).join('');
+    bindExerciseEvents();
+  }
+
+  function updateStatsOnly(block, name) {
+    const prev=previousFor(name), best=bestFor(name);
+    const line=block.querySelector('.statline');
+    line.innerHTML=`<span class="prev">前回：${esc(prev ? formatSets(prev.sets) : '記録なし')}</span>${best ? `<span class="pr">自己ベスト：${esc(best.weight)}kg × ${esc(best.reps)}回</span>` : ''}`;
+  }
+
+  function bindExerciseEvents() {
+    $$('.exercise').forEach(block => {
+      const i=Number(block.dataset.index); const ex=drafts[currentDay][i]; if(!ex) return;
+      const name=block.querySelector('.exname');
+      name.addEventListener('input', () => { ex.name=name.value; });
+      name.addEventListener('change', () => { ex.name=name.value.trim() || '新しい種目'; name.value=ex.name; updateStatsOnly(block,ex.name); });
+      const weights=Array.from(block.querySelectorAll('.weight'));
+      const reps=Array.from(block.querySelectorAll('.reps'));
+      weights.forEach((input,si) => {
+        const updateWeight = () => {
+          ex.values[si].weight=input.value;
+          ex.values[si].weightManual=true;
+          for(let next=si+1;next<ex.values.length;next++){
+            if(ex.values[next].weightManual) break;
+            ex.values[next].weight=ex.values[next-1].weight;
+            weights[next].value=ex.values[next].weight;
+          }
+        };
+        input.addEventListener('input', updateWeight);
+        input.addEventListener('change', updateWeight);
+      });
+      reps.forEach((input,si) => {
+        input.addEventListener('input', () => { ex.values[si].reps=input.value; });
+        input.addEventListener('change', () => { ex.values[si].reps=input.value; if(reps[si+1]) reps[si+1].focus(); });
+      });
+      const memo=block.querySelector('.exerciseMemo'); memo.addEventListener('input',()=>{ex.memo=memo.value;});
+      block.querySelector('.addSet').addEventListener('click',()=>{ ex.values.push({weight:ex.values.at(-1)?.weight || '',reps:''}); renderExercises(); focusSet(i,ex.values.length-1); });
+      block.querySelector('.removeSet').addEventListener('click',()=>{ if(ex.values.length>1){ex.values.pop();renderExercises();} });
+      block.querySelector('.removeExercise').addEventListener('click',()=>{ if(confirm(`「${ex.name || 'この種目'}」を今日のメニューから削除しますか？`)){drafts[currentDay].splice(i,1);renderExercises();} });
+    });
+  }
+  function focusSet(exIndex,setIndex){ setTimeout(()=>{ const block=$(`.exercise[data-index="${exIndex}"]`); block?.querySelector(`.setrow[data-set="${setIndex}"] .reps`)?.focus(); },30); }
+
+  function setDay(day) {
+    currentDay=day;
+    $$('.daybtn').forEach(b => b.classList.toggle('active',b.dataset.day===day));
+    renderExercises();
+  }
+
+  function collectWorkout() {
+    return {
+      id:Date.now(), date:$('#workoutDate').value || localDate(), day:currentDay, title:programs[currentDay].title,
+      pain:Math.max(0,Math.min(10,Number($('#pain').value)||0)), numb:$('#numb').value, numbness:$('#numb').value,
+      note:$('#workoutNote').value.trim(), exercises:drafts[currentDay].map(ex => ({
+        name:String(ex.name||'').trim() || '名称未設定', target:ex.target, targetReps:ex.reps, memo:ex.memo,
+        sets:ex.values.map(s => ({weight:String(s.weight??''), reps:String(s.reps??'')}))
+      }))
+    };
+  }
+
+  function saveWorkout() {
+    const rec=collectWorkout();
+    const hasInput=rec.exercises.some(e => e.sets.some(s => s.weight || s.reps));
+    if(!hasInput && !confirm('重量・回数がまだ入力されていません。このまま保存しますか？')) return;
+    const h=workoutHistory(); h.push(rec); save(STORAGE.workouts,h);
+    renderProgress(); renderDatalist();
+    $('#saveMsg').textContent='保存しました。';
+    setTimeout(()=>$('#saveMsg').textContent='',1800);
+    drafts[currentDay]=freshDay(currentDay); $('#pain').value='0'; $('#numb').value='no'; $('#workoutNote').value='';
+    renderExercises();
+  }
+
+  function renderHistory() {
+    const h=workoutHistory().slice().sort((a,b)=>String(b.date??'').localeCompare(String(a.date??'')) || Number(b.id||0)-Number(a.id||0));
+    if(!h.length){$('#historyList').innerHTML='<div class="empty">まだ記録がありません。</div>';return;}
+    $('#historyList').innerHTML=h.map((w,i)=>{
+      const day=typeof w.day==='number' ? `DAY${w.day}` : String(w.day||'');
+      const exs=(Array.isArray(w.exercises)?w.exercises:[]).map(e=>`<div class="historyEx"><b>${esc(e.name||'種目')}</b><br>${esc(formatSets(normalizeSets(e)))}${e.memo?`<br><span class="note">メモ：${esc(e.memo)}</span>`:''}</div>`).join('');
+      return `<div class="historyItem"><div class="historyHead"><div><div class="historyDay">${esc(day)}</div><div class="historyDate">${esc(w.date||'日付なし')}</div></div><button class="dangerBtn" data-del="${esc(String(w.id??i))}" type="button">削除</button></div>${exs}${w.note?`<div class="note" style="margin-top:8px">全体メモ：${esc(w.note)}</div>`:''}</div>`;
+    }).join('');
+    $$('#historyList [data-del]').forEach(btn=>btn.addEventListener('click',()=>{
+      const id=btn.dataset.del;
+      if(!confirm('この記録を削除しますか？')) return;
+      const a=workoutHistory();
+      const next=a.filter((x,idx)=>String(x.id??idx)!==id); save(STORAGE.workouts,next); renderHistory(); renderProgress(); renderDatalist();
+    }));
+  }
+
+  function numericInput(selector){const n=parseFloat($(selector).value);return Number.isFinite(n)?n:null;}
+  function bodyHistory(){const v=load(STORAGE.body,[]);return Array.isArray(v)?v:[];}
+  function saveBody(){const a=bodyHistory();a.push({id:Date.now(),date:$('#bodyDate').value||localDate(),weight:numericInput('#weight'),fatPct:numericInput('#fatPct'),skeletalMuscle:numericInput('#skeletalMuscle'),limbLean:numericInput('#limbLean')});save(STORAGE.body,a);renderBody();drawChart();}
+  function renderBody(){const a=bodyHistory().slice().sort((x,y)=>String(x.date||'').localeCompare(String(y.date||'')));const l=a.at(-1);$('#bodyKpis').innerHTML=l?`<div class="kpi"><span>体重</span><b>${l.weight??'-'} kg</b></div><div class="kpi"><span>体脂肪率</span><b>${l.fatPct??'-'} %</b></div><div class="kpi"><span>骨格筋量</span><b>${l.skeletalMuscle??'-'} kg</b></div><div class="kpi"><span>四肢除脂肪量</span><b>${l.limbLean??'-'} kg</b></div>`:'<div class="empty">まだ体組成データがありません。</div>';}
+  function drawChart(){const c=$('#weightChart'),ctx=c.getContext('2d'),a=bodyHistory().filter(x=>Number.isFinite(Number(x.weight))).sort((x,y)=>String(x.date||'').localeCompare(String(y.date||'')));ctx.clearRect(0,0,c.width,c.height);ctx.font='18px -apple-system, sans-serif';ctx.fillStyle='#6b7280';if(a.length<2){ctx.fillText('2件以上でグラフ表示',28,55);return;}const p=48, vals=a.map(x=>Number(x.weight)),mn=Math.min(...vals)-.8,mx=Math.max(...vals)+.8,range=Math.max(.1,mx-mn);ctx.strokeStyle='#14213D';ctx.lineWidth=4;ctx.beginPath();a.forEach((x,i)=>{const xx=p+i*(c.width-p*2)/(a.length-1),yy=c.height-p-(Number(x.weight)-mn)/range*(c.height-p*2);if(i===0)ctx.moveTo(xx,yy);else ctx.lineTo(xx,yy);});ctx.stroke();ctx.fillStyle='#14213D';a.forEach((x,i)=>{const xx=p+i*(c.width-p*2)/(a.length-1),yy=c.height-p-(Number(x.weight)-mn)/range*(c.height-p*2);ctx.beginPath();ctx.arc(xx,yy,6,0,Math.PI*2);ctx.fill();});}
+
+  function exportData(){const data={version:5,workouts:workoutHistory(),body:bodyHistory(),exportedAt:new Date().toISOString()};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`training-backup-${localDate()}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+  async function importData(file){try{const d=JSON.parse(await file.text());if(Array.isArray(d.workouts))save(STORAGE.workouts,d.workouts);if(Array.isArray(d.body))save(STORAGE.body,d.body);renderProgress();renderDatalist();alert('バックアップを読み込みました。');}catch(e){alert('読み込みに失敗しました。JSONファイルを確認してください。');}}
+
+  $$('.tab').forEach(btn=>btn.addEventListener('click',()=>{ $$('.tab').forEach(b=>b.classList.toggle('active',b===btn)); ['workout','history','body','data'].forEach(id=>$('#'+id).classList.add('hidden')); const target=btn.dataset.tab; $('#'+target).classList.remove('hidden'); if(target==='history')renderHistory(); if(target==='body'){renderBody();drawChart();} }));
+  $$('.daybtn').forEach(btn=>btn.addEventListener('click',()=>setDay(btn.dataset.day)));
+  $('#addExercise').addEventListener('click',()=>{drafts[currentDay].push(makeExercise({name:'',target:'自由設定',sets:3,reps:''}));renderExercises();setTimeout(()=>{const names=$$('.exname');const input=names[names.length-1];input?.focus();},30);});
+  $('#saveWorkout').addEventListener('click',saveWorkout);
+  $('#saveBody').addEventListener('click',saveBody);
+  $('#exportBtn').addEventListener('click',exportData);
+  $('#importBtn').addEventListener('click',()=>$('#importFile').click());
+  $('#importFile').addEventListener('change',e=>{const f=e.target.files?.[0];if(f)importData(f);e.target.value='';});
+
+  $('#workoutDate').value=localDate(); $('#bodyDate').value=localDate();
+  renderProgress(); renderExercises();
+})();
+</script>
+</body>
+</html>
